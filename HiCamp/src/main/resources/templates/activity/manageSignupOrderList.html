@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- basic -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+     <link rel="stylesheet" type="text/css" href="/jquery.datetimepicker.css"/ >
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+     <link rel="stylesheet" href="/resources/demos/style.css">
+      
+      
+ <title>顯示所有訂單列表</title>
+
+ <style>
+    /* */
+    th {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    td {
+      white-space: nowrap;
+      /* 不換行 */
+      overflow: hidden;
+      /* 超出部分隱藏 */
+      text-overflow: ellipsis;
+      /* 顯示省略號 */
+    }
+ </style>
+
+</head>
+
+<body class="dashboard dashboard_1">
+  <div class="full_container">
+    <div class="inner_container">
+      <!-- Sidebar  -->
+      <div th:replace="~{layout/leftbar}"></div>
+      <!-- right content -->
+      <div id="content">
+        <!-- topbar -->
+        <div th:replace="~{layout/topbar}"></div>
+        <!-- end topbar -->
+        
+        <!-- dashboard inner -->
+        <div class="midde_cont">
+          <div class="container-fluid">
+            <div class="row column_title">
+              <div class="col-md-12">
+                <div class="page_title" style="display: flex; align-items: center;">
+                  <h2>訂單管理</h2>
+                  
+                   <button type="button" class="create btn btn-outline-danger btn-lg" style="margin-left: 50px"
+                    data-bs-toggle="modal" data-bs-target="#exampleModal">新增訂單</button>
+
+                </div>
+              </div>
+            </div>
+
+<!------------------------------------------訂單列表-------------------------------------------->
+            <div class="table" style="width: 90%; margin: 0 auto;">
+              <table id="example" class="hover" style="width: 100%; font-size: 20px;">
+                <thead>
+                  <tr>
+                    <th style="width: 100px;">訂單編號</th>
+                    <th style="width: 100px;">報名日期</th>
+                    <th style="width: 100px;">會員編號</th>
+                    <th style="width: 100px;">會員姓名</th>
+                    <th style="display:none;"></th>
+                    <th style="width: 100px;">活動名稱</th>
+                    <th style="display:none;"></th>
+                    <th style="width: 100px;">出發日期</th>
+                    <th style="width: 100px;">回程日期</th>
+                    <th style="width: 100px;">訂單金額</th>
+                    <th style="width: 100px;">付款狀態</th>
+                    <th style="width: 100px;">編輯資料</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <th:block th:each="signupOrderList : ${signupOrderList}">
+                    <tr>
+                      <td th:text="${signupOrderList.activitySignupNo}"></td>
+                      <td th:text="${#dates.format(signupOrderList.signupDate, 'yyyy-MM-dd')}"></td>
+                      <td th:text="${signupOrderList.memberNo}" ></td>
+                      <td th:text="${signupOrderList.memberName}"></td>
+                      
+                      <td style="width: 100px;display:none;" th:text="${signupOrderList.activityNo}"></td>
+                      <td th:text="${signupOrderList.activityName}" style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 120px"></td>
+                      
+                      <td style="display:none;" th:text="${signupOrderList.activityPeriodNo}"></td>
+                      <td th:text="${#dates.format(signupOrderList.activityDepartureDate, 'yyyy-MM-dd')}"></td>
+                      <td th:text="${#dates.format(signupOrderList.activityReturnDate, 'yyyy-MM-dd')}"></td>   
+                      <td th:text="${signupOrderList.signupTotalAmount}"></td>
+                      <td th:text="${signupOrderList.signupPaymentStatus}"></td>
+                      <td><button class="edit-btn btn btn-outline-secondary" th:data-signupId="${signupOrderList.activitySignupNo}">編輯</button></td>
+
+                    </tr>
+                  </th:block>
+                  
+                <tfoot>
+                  <tr>
+                    <th>訂單編號</th>
+                    <th>報名日期</th>
+                    <th>會員編號</th>
+                    <th>會員姓名</th>
+                    <th style="display:none;"></th>
+                    <th>活動名稱</th>
+                    <th style="display:none;"></th>
+                    <th>出發日期</th>
+                    <th>回程日期</th>
+                    <th>訂單金額</th>
+                    <th>付款狀態</th>
+                    <th>編輯資料</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+<!------------------------------------------訂單列表END-------------------------------------------->            
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!------------------------------------------新增訂單 彈跳視窗 ------------------------------------------>
+                  <div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">新增訂單</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+				      
+                        <form th:action="@{/activity/insertOrder}" method="post" enctype="multipart/form-data"
+                          id="insertForm">
+
+                          <div class="modal-body" style="display: flex; flex-wrap: wrap;">
+                            <div style="width: 600px; float: left;">
+
+                             <div>
+                                <label for="" class="col-form-label">會員編號:</label>
+                                <input type="text" class="form-control" id="memberNo" name="memberNo" />
+                              </div>
+                              
+                              <div>
+                                <label for="" class="col-form-label">報名日期:</label>
+                              <input type="text" id="signupDate" name="signupDate" class="form-control">
+                              </div>
+                              
+                              <div>
+                                <label for="" class="col-form-label">期別編號:</label>
+                                <input type="text" class="form-control" id="activityPeriodNo" name="activityPeriodNo"
+                                  list="namelist" placeholder="請輸入編號">
+                              </div>
+							<div>
+
+                              <div>
+                                <label for="" class="col-form-label">報名數量:</label>
+                                <input type="number" class="form-control" id="signupQuantity" name="signupQuantity" >
+                              </div>
+                              
+                              <div>
+                                <label for="" class="col-form-label">訂單總額:</label>
+                                <input type="number" id="signupTotalAmount" name="signupTotalAmount" class="form-control">
+                              </div>
+							  
+								<div>
+								  <label for="" class="col-form-label">付款狀態:</label>
+								  <select id="paymentStatusSelect" class="form-select">
+								    <option selected disabled></option>
+								    <option>已付款</option>
+								    <option>未付款</option>
+								  </select>
+								  <input type="hidden" id="paymentStatusInput" name="signupPaymentStatus">
+								</div>
+                              
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-outline-primary" >確定</button>
+                            <button type="reset" class="my-reset-data-btn btn btn-outline-primary">清除</button>
+                            <button type="button" id="fillData" class="my-filldata-data-btn btn btn-outline-primary">一鍵輸入</button>
+                          </div>
+                            </div>
+
+  						 </div>
+  						 </div>
+  						 
+                        </form>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  
+<!------------------------------------------新增訂單END------------------------------------------>
+  
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  
+  <script>
+//<!--   一鍵輸入 -->
+    const url = "http://localhost:8080/HiCamp/activity/insertOrder";
+    const btnFilldata = document.querySelector(".my-filldata-data-btn");
+
+    document.getElementById("fillData").addEventListener("click", fillData);
+    function fillData() {
+        document.getElementById("memberNo").value= 14 ;
+        document.getElementById("signupDate").value = "2023/06/06";
+        document.getElementById("activityPeriodNo").value = 1;
+        document.getElementById("signupQuantity").value = 1;
+        document.getElementById("signupTotalAmount").value = 3000;
+        document.getElementById("paymentStatusSelect").value = "未付款";
+    }
+    
+//<!-- DatePicker -->
+$(function () {
+    $(document).ready(function () {
+        $("#signupDate").datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+    });
+});
+  
+//<!-- 新增訂單 --> 
+$('form').on('submit', function (e) {
+
+  e.preventDefault();
+
+  var form = this;
+  $('#paymentStatusInput').val($('#paymentStatusSelect').val());
+  
+
+  swal({
+    title: '是否確認送出?',
+    text: "",
+    icon: 'info',
+    buttons: ['取消', '確定'],
+    dangerMode: false,
+  })
+    .then((confirmed) => {
+      if (confirmed) {
+        swal('新增成功', '新增成功')
+          .then(() => {
+            $.ajax({
+              type: form.method,
+              url: form.action,
+              data: $(form).serialize(),
+              success: function() {
+                window.location.href = "http://localhost:8080/HiCamp/activity/findAllSignupOrdersDto";
+              }
+            });
+          });
+      }
+    });
+});
+  
+//<!-- 編輯訂單 --> 
+    var editBtn = document.getElementsByClassName("edit-btn");
+
+    for (i = 0; i < editBtn.length; i++) {
+      editBtn[i].addEventListener('click', function (e) {
+        const signupId = this.getAttribute('data-signupId');
+        window.location.href = "http://localhost:8080/HiCamp/activity/findOneSignupOrder?activitySignupNo=" + signupId;
+
+      });
+    }
+
+</script>
+
+<!-- DataTable -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+<script>
+      $(document).ready(function () {
+         $('#example').DataTable();
+      });
+</script>
+
+</body>
+
+</html>
